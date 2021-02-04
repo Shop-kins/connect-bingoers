@@ -35,7 +35,7 @@ exports.handler = function(event, context, callback) {
     Item: {
       id: { S: event.requestContext.connectionId },
       room: { S: event.queryStringParameters.room },
-      count: { S: "$count" }
+      colour_count: { S: "$count" }
     }
   };
 
