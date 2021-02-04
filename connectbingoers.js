@@ -15,7 +15,6 @@ exports.handler = function(event, context, callback) {
   
   var scanParams = {
     TableName:"GridConnections",
-    ProjectionExpression: "id, #yr",
     FilterExpression: "#yr = :yyyy",
     ExpressionAttributeNames:{
         "#yr": "room"
@@ -26,8 +25,9 @@ exports.handler = function(event, context, callback) {
     Select: "COUNT"
   };
   var count = 0;
-  ddb.scan(scanParams, async (err, data) => {
-    count = data["Count"]
+  ddb.scan(scanParams, function (err, data) {
+    console.log(err)
+    count = (data.COUNT)
   });
            
   var putParams = {
@@ -35,7 +35,7 @@ exports.handler = function(event, context, callback) {
     Item: {
       id: { S: event.requestContext.connectionId },
       room: { S: event.queryStringParameters.room },
-      count: { S: count }
+      count: { S: "$count" }
     }
   };
 
