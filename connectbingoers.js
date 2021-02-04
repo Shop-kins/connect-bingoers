@@ -26,24 +26,24 @@ exports.handler = function(event, context, callback) {
   };
   var count = 0;
   ddb.scan(scanParams, function (err, data) {
-    console.log(err)
-    count = (data.COUNT)
-  });
-           
-  var putParams = {
+    count = (data.Count)
+    var putParams = {
     TableName: "GridConnections",
     Item: {
       id: { S: event.requestContext.connectionId },
       room: { S: event.queryStringParameters.room },
-      colour_count: { S: "$count" }
-    }
-  };
+      colour_count: { S: "" + count }
+      }
+    };
 
-  DDB.putItem(putParams, function(err, data) {
-    callback(null, {
-      statusCode: err ? 500 : 200,
-      body: err ? "Failed to connect: " + JSON.stringify(err) : "Connected"
+    DDB.putItem(putParams, function(err, data) {
+      callback(null, {
+        statusCode: err ? 500 : 200,
+        body: err ? "Failed to connect: " + JSON.stringify(err) : "Connected"
+      });
     });
   });
+           
+  
   return { statusCode: 200, body: 'GREETINGS' };
 };
