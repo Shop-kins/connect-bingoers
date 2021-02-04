@@ -21,14 +21,14 @@ exports.handler = function(event, context, callback) {
         "#yr": "room"
     },
     ExpressionAttributeValues: {
-        ":yyyy": { S: room }
+        ":yyyy": { S: event.queryStringParameters.room }
     },
     Select: "COUNT"
   };
   var count = 0;
   ddb.scan(scanParams, async (err, data) => {
     count = data["Count"]
-  }
+  });
            
   var putParams = {
     TableName: "GridConnections",
