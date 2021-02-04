@@ -10,11 +10,32 @@ exports.handler = function(event, context, callback) {
   }
  var DDB = new AWS.DynamoDB();
   
+  
+  var ddb = new AWS.DynamoDB();
+  
+  var scanParams = {
+    TableName:"GridConnections",
+    ProjectionExpression: "id, #yr",
+    FilterExpression: "#yr = :yyyy",
+    ExpressionAttributeNames:{
+        "#yr": "room"
+    },
+    ExpressionAttributeValues: {
+        ":yyyy": { S: room }
+    },
+    Select: "COUNT"
+  };
+  var count = 0;
+  ddb.scan(scanParams, async (err, data) => {
+    count = data["Count"]
+  }
+           
   var putParams = {
     TableName: "GridConnections",
     Item: {
       id: { S: event.requestContext.connectionId },
-      room: { S: event.queryStringParameters.room }
+      room: { S: event.queryStringParameters.room },
+      count: { S: count }
     }
   };
 
